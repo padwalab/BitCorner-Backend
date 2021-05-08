@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
+import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> constraintException(ConstraintViolationException ex, WebRequest request) {
         ErrorDetails eDetails = new ErrorDetails(new Date(), List.of(ex.getMessage()), request.getDescription(false));
         return new ResponseEntity<>(eDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> invalidCredentialException(InvalidCredentialsException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), List.of(ex.getMessage()),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

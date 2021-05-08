@@ -3,6 +3,7 @@ package org.sjsu.bitcornerbackend.user;
 import java.net.URI;
 import java.util.List;
 
+import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.user.User.UserBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,17 @@ public class UserController {
 
         User userResult = userRepository.save(user);
         return ResponseEntity.created(URI.create(String.format("/api/users/%s", userResult.getId()))).body(userResult);
+    }
+
+    @PostMapping(value = "/validate")
+    public ResponseEntity<User> validateUser(@RequestBody User user)
+            throws UserNotFoundException, InvalidCredentialsException {
+        User userResult = userRepository.findByEmail(user.getEmail()).orElseThrow(
+                () -> new UserNotFoundException("User with email: " + user.getEmail() + " does not exist;"));
+        if (!userResult.getPassword().equals(user.getPassword())) {
+            throw new InvalidCredentialsException("Incorrect email or password");
+        }
+        return ResponseEntity.ok().body(userResult);
     }
 
     @GetMapping(value = "/{id}")
