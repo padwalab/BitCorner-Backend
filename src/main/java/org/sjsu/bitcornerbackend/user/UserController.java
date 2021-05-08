@@ -9,7 +9,6 @@ import org.sjsu.bitcornerbackend.bankAccount.BankAccountBuilder;
 import org.sjsu.bitcornerbackend.bankAccount.BankAccountService;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
-import org.sjsu.bitcornerbackend.user.User.UserBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -61,7 +60,7 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id}/addBankAccount")
     public ResponseEntity<User> addBankAccount(@PathVariable(value = "id") Long userId,
             @RequestBody BankAccountBuilder bankAccountBuilder) throws UserNotFoundException {
         BankAccount bankAccount = bankAccountService.createBankAccount(bankAccountBuilder);
@@ -70,5 +69,12 @@ public class UserController {
 
         return ResponseEntity.created(URI.create(String.format("/api/%s/%s", user.getId(), bankAccount.getId())))
                 .body(user);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<User> updateUserProfile(@PathVariable(value = "id") Long userId, @RequestBody User user)
+            throws UserNotFoundException, InvalidCredentialsException {
+        User userResult = userService.update(userId, user);
+        return ResponseEntity.ok().body(userResult);
     }
 }

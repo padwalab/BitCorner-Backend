@@ -5,9 +5,9 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
+import org.sjsu.bitcornerbackend.bankAccount.BankAccountRepository;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
-import org.sjsu.bitcornerbackend.user.User.UserBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +46,21 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exit"));
         user.setBankAccount(bankAccount);
         user = userRepository.save(user);
+        return user;
+    }
+
+    @Override
+    public User update(Long userId, User user) throws UserNotFoundException, InvalidCredentialsException {
+        User userOg = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
+        if (!userOg.getPassword().equals(user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid credentials");
+        }
+        userOg.setAddress(user.getAddress());
+        userOg.setName(user.getName());
+
+        user = userRepository.save(userOg);
+
         return user;
     }
 

@@ -7,7 +7,6 @@ import org.sjsu.bitcornerbackend.bankAccount.BankAccountBuilder;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
-import org.sjsu.bitcornerbackend.user.User.UserBuilder;
 
 public interface IUserService {
     List<User> listUsers();
@@ -16,5 +15,8 @@ public interface IUserService {
 
     User validate(User user) throws UserNotFoundException, InvalidCredentialsException;
 
+    User update(Long userId, User user) throws UserNotFoundException, InvalidCredentialsException;
+
     User addBankAccount(Long userId, BankAccount bankAccount) throws UserNotFoundException;
+
 }
