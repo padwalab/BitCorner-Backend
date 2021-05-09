@@ -64,4 +64,11 @@ public class UserService implements IUserService {
         return user;
     }
 
+    @Override
+    public User findById(Long userId) throws UserNotFoundException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
+        return user;
+    }
+
 }

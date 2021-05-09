@@ -1,5 +1,9 @@
 package org.sjsu.bitcornerbackend.bankAccount;
 
+import java.math.BigDecimal;
+import java.util.Set;
+
+import org.sjsu.bitcornerbackend.currencies.Currencies;
 import org.sjsu.bitcornerbackend.util.Currency;
 
 public class BankAccountBuilder {
@@ -7,7 +11,7 @@ public class BankAccountBuilder {
     String country;
     Integer accountNumber;
     Currency currency;
-    double balance;
+    Set<Currencies> currencies;
 
     public BankAccountBuilder() {
 
@@ -33,8 +37,8 @@ public class BankAccountBuilder {
         return this;
     }
 
-    public BankAccountBuilder setBalance(double balance) {
-        this.balance = balance;
+    public BankAccountBuilder setCurruncies(Set<Currencies> currencies) {
+        this.currencies = currencies;
         return this;
     }
 

@@ -1,13 +1,19 @@
 package org.sjsu.bitcornerbackend.bankAccount;
 
+import java.math.BigDecimal;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+
 import javax.persistence.Table;
 
+import org.sjsu.bitcornerbackend.currencies.Currencies;
 import org.sjsu.bitcornerbackend.util.Currency;
 
 @Entity
@@ -32,8 +38,14 @@ public class BankAccount {
     @Column(name = "currency", nullable = false)
     private Currency currency;
 
-    @Column(name = "balance", nullable = false)
-    private double balance;
+    // @Column(name = "balance", nullable = false)
+    // private BigDecimal balance;
+
+    // @Column(name = "bitcoin", nullable = false)
+    // private BigDecimal bitcoin;
+
+    @OneToMany
+    private Set<Currencies> currencies;
 
     public BankAccount() {
     }
@@ -43,7 +55,9 @@ public class BankAccount {
         this.accountNumber = bankAccountBuilder.accountNumber;
         this.country = bankAccountBuilder.country;
         this.currency = bankAccountBuilder.currency;
-        this.balance = bankAccountBuilder.balance;
+        // this.balance = bankAccountBuilder.balance;
+        // this.bitcoin = bankAccountBuilder.bitcoin;
+        this.currencies = bankAccountBuilder.currencies;
     }
 
     public long getId() {
@@ -86,59 +100,34 @@ public class BankAccount {
         this.currency = currency;
     }
 
-    public double getBalance() {
-        return balance;
+    // public BigDecimal getBalance() {
+    // return balance;
+    // }
+
+    // public void setBalance(BigDecimal balance) {
+    // this.balance = balance;
+    // }
+
+    // public BigDecimal getBitcoin() {
+    // return bitcoin;
+    // }
+
+    // public void setBitcoin(BigDecimal bitcoin) {
+    // this.bitcoin = bitcoin;
+    // }
+
+    public Set<Currencies> getCurrencies() {
+        return currencies;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void setCurrencies(Set<Currencies> currencies) {
+        this.currencies = currencies;
     }
 
     @Override
     public String toString() {
-        return "BankAccount [accountNumber=" + accountNumber + ", balance=" + balance + ", bankName=" + bankName
-                + ", country=" + country + ", currency=" + currency + "]";
+        return "BankAccount [accountNumber=" + accountNumber + ", bankName=" + bankName + ", country=" + country
+                + ", currency=" + currency + "]";
     }
 
-    // public static class AccountBuilder {
-    // private String bankName;
-    // private String country;
-    // private Integer accountNumber;
-    // private Currency currency;
-    // private double balance;
-
-    // public AccountBuilder() {
-
-    // }
-
-    // public AccountBuilder setBankName(String bankName) {
-    // this.bankName = bankName;
-    // return this;
-    // }
-
-    // public AccountBuilder setCountry(String country) {
-    // this.country = country;
-    // return this;
-    // }
-
-    // public AccountBuilder setAccountNumber(Integer accountNumber) {
-    // this.accountNumber = accountNumber;
-    // return this;
-    // }
-
-    // public AccountBuilder setCurrency(Currency currency) {
-    // this.currency = currency;
-    // return this;
-    // }
-
-    // public AccountBuilder setBalance(double balance) {
-    // this.balance = balance;
-    // return this;
-    // }
-
-    // public BankAccount build() {
-    // return new BankAccount(this);
-    // }
-
-    // }
 }

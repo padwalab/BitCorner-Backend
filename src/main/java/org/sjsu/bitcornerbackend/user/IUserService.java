@@ -19,4 +19,5 @@ public interface IUserService {
 
     User addBankAccount(Long userId, BankAccount bankAccount) throws UserNotFoundException;
 
+    User findById(Long userId) throws UserNotFoundException;
 }
