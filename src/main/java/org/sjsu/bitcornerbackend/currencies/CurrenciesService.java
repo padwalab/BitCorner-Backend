@@ -20,6 +20,10 @@ public class CurrenciesService implements ICurrencyService {
     public Set<Currencies> createDefaultCurrencies() {
         Set<Currencies> currencySet = new HashSet<>();
 
+        Currencies BTC = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setCurrency(Currency.BTC).build();
+        BTC = currenciesRepository.save(BTC);
+        currencySet.add(BTC);
+
         Currencies Usd = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setCurrency(Currency.USD).build();
         Usd = currenciesRepository.save(Usd);
         currencySet.add(Usd);
@@ -32,9 +36,6 @@ public class CurrenciesService implements ICurrencyService {
         Gbp = currenciesRepository.save(Gbp);
         currencySet.add(Gbp);
 
-        Currencies BTC = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setCurrency(Currency.BTC).build();
-        BTC = currenciesRepository.save(BTC);
-        currencySet.add(BTC);
         return currencySet;
     }
 
