@@ -1,6 +1,5 @@
 package org.sjsu.bitcornerbackend.bankAccount;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,6 +13,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.sjsu.bitcornerbackend.currencies.Currencies;
+import org.sjsu.bitcornerbackend.orders.Orders;
 import org.sjsu.bitcornerbackend.util.Currency;
 
 @Entity
@@ -47,6 +47,9 @@ public class BankAccount {
     @OneToMany
     private Set<Currencies> currencies;
 
+    @OneToMany
+    private Set<Orders> orders;
+
     public BankAccount() {
     }
 
@@ -55,8 +58,6 @@ public class BankAccount {
         this.accountNumber = bankAccountBuilder.accountNumber;
         this.country = bankAccountBuilder.country;
         this.currency = bankAccountBuilder.currency;
-        // this.balance = bankAccountBuilder.balance;
-        // this.bitcoin = bankAccountBuilder.bitcoin;
         this.currencies = bankAccountBuilder.currencies;
     }
 
@@ -122,6 +123,14 @@ public class BankAccount {
 
     public void setCurrencies(Set<Currencies> currencies) {
         this.currencies = currencies;
+    }
+
+    public Set<Orders> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Orders> orders) {
+        this.orders = orders;
     }
 
     @Override

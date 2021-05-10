@@ -3,8 +3,6 @@ package org.sjsu.bitcornerbackend.user;
 import java.util.List;
 
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
-import org.sjsu.bitcornerbackend.bankAccount.BankAccountBuilder;
-import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 

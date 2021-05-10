@@ -3,10 +3,6 @@ package org.sjsu.bitcornerbackend.user;
 import java.net.URI;
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
-import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
-import org.sjsu.bitcornerbackend.bankAccount.BankAccountBuilder;
-import org.sjsu.bitcornerbackend.bankAccount.BankAccountService;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +23,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private BankAccountService bankAccountService;
 
     @Autowired
     private UserRepository userRepository;
@@ -58,17 +51,6 @@ public class UserController {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exit"));
         return ResponseEntity.ok().body(user);
-    }
-
-    @PutMapping(value = "/{id}/addBankAccount")
-    public ResponseEntity<User> addBankAccount(@PathVariable(value = "id") Long userId,
-            @RequestBody BankAccountBuilder bankAccountBuilder) throws UserNotFoundException {
-        BankAccount bankAccount = bankAccountService.createBankAccount(bankAccountBuilder);
-
-        User user = userService.addBankAccount(userId, bankAccount);
-
-        return ResponseEntity.created(URI.create(String.format("/api/%s/%s", user.getId(), bankAccount.getId())))
-                .body(user);
     }
 
     @PutMapping(value = "/{id}")

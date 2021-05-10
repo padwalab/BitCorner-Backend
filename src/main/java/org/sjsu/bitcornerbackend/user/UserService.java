@@ -5,7 +5,6 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
-import org.sjsu.bitcornerbackend.bankAccount.BankAccountRepository;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
