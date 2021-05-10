@@ -59,4 +59,5 @@ public class UserController {
         User userResult = userService.update(userId, user);
         return ResponseEntity.ok().body(userResult);
     }
+
 }

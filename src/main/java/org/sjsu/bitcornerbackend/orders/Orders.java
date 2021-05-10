@@ -7,13 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ManyToAny;
-import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
+import org.sjsu.bitcornerbackend.util.Currency;
 import org.sjsu.bitcornerbackend.util.OrderType;
 import org.sjsu.bitcornerbackend.util.OrderVariant;
 
@@ -29,6 +26,9 @@ public class Orders {
     @Column(name = "units")
     private int units;
 
+    @Column(name = "currency")
+    private Currency currency;
+
     @Column(name = "type")
     private OrderType type;
 
@@ -38,28 +38,40 @@ public class Orders {
     @Column(name = "limitamt")
     private BigDecimal limitamt;
 
-    @ManyToOne
-    private BankAccount bankAccount;
+    // @JsonIgnoreProperties(value = { "orders" })
+    // @ManyToOne
+    // private BankAccount bankAccount;
+
+    @Column(name = "userid")
+    private Long user;
 
     public Orders() {
     }
 
-    public Orders(long id, int units, OrderType type, OrderVariant variant, BigDecimal limitamt,
-            BankAccount bankAccount) {
+    public Orders(long id, int units, OrderType type, OrderVariant variant, BigDecimal limitamt, Long user) {
         this.id = id;
         this.units = units;
         this.type = type;
         this.variant = variant;
         this.limitamt = limitamt;
-        this.bankAccount = bankAccount;
+        this.user = user;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public Orders(OrdersBuilder ordersBuilder) {
-        this.bankAccount = ordersBuilder.bankAccount;
+        this.user = ordersBuilder.user;
         this.limitamt = ordersBuilder.limitamt;
         this.type = ordersBuilder.type;
         this.variant = ordersBuilder.variant;
         this.units = ordersBuilder.units;
+        this.currency = ordersBuilder.currency;
     }
 
     public long getId() {
@@ -102,12 +114,12 @@ public class Orders {
         this.limitamt = limitamt;
     }
 
-    public BankAccount getBankAccount() {
-        return bankAccount;
+    public Long getUser() {
+        return user;
     }
 
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
+    public void setUser(Long user) {
+        this.user = user;
     }
 
     @Override

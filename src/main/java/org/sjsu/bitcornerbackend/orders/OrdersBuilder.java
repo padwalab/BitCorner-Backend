@@ -2,12 +2,13 @@ package org.sjsu.bitcornerbackend.orders;
 
 import java.math.BigDecimal;
 
-import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
+import org.sjsu.bitcornerbackend.util.Currency;
 import org.sjsu.bitcornerbackend.util.OrderType;
 import org.sjsu.bitcornerbackend.util.OrderVariant;
 
 public class OrdersBuilder {
     int units;
+    Currency currency;
 
     OrderType type;
 
@@ -15,13 +16,42 @@ public class OrdersBuilder {
 
     BigDecimal limitamt;
 
-    BankAccount bankAccount;
+    Long user;
+
+    public int getUnits() {
+        return units;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public OrderType getType() {
+        return type;
+    }
+
+    public OrderVariant getVariant() {
+        return variant;
+    }
+
+    public BigDecimal getLimitamt() {
+        return limitamt;
+    }
+
+    public Long getUser() {
+        return user;
+    }
 
     public OrdersBuilder() {
     }
 
     public OrdersBuilder setUnits(int units) {
         this.units = units;
+        return this;
+    }
+
+    public OrdersBuilder setCurrency(Currency currency) {
+        this.currency = currency;
         return this;
     }
 
@@ -40,8 +70,8 @@ public class OrdersBuilder {
         return this;
     }
 
-    public OrdersBuilder setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
+    public OrdersBuilder setUser(Long user) {
+        this.user = user;
         return this;
     }
 
