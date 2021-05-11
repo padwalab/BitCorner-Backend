@@ -16,6 +16,7 @@ import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsExc
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.orders.Orders;
 import org.sjsu.bitcornerbackend.orders.OrdersBuilder;
+import org.sjsu.bitcornerbackend.util.Currency;
 import org.sjsu.bitcornerbackend.util.CurrencyUnitValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,6 +105,9 @@ public class UserService implements IUserService {
             throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
+        if (user.getBankAccount() == null) {
+            throw new BankAccountNotFoundException("User does not have a bank account");
+        }
         BigDecimal amount = CurrencyUnitValues.getUnitValue(ordersBuilder.getCurrency(), ordersBuilder.getUnits());
         for (Currencies currencies : user.getBankAccount().getCurrencies()) {
             if (currencies.getCurrency() == ordersBuilder.getCurrency()) {
@@ -123,6 +127,24 @@ public class UserService implements IUserService {
             throw new DuplicateNicknameException("Nickname is taken");
         }
         return true;
+    }
+
+    @Override
+    public User initiateSellOrder(Long userId, BigDecimal units)
+            throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
+        if (user.getBankAccount() == null) {
+            throw new BankAccountNotFoundException("User does not have a bank account");
+        }
+        for (Currencies currencies : user.getBankAccount().getCurrencies()) {
+            if (currencies.getCurrency() == Currency.BTC) {
+                if (units.compareTo(currencies.getAmount()) > 0) {
+                    throw new InsufficientFundsException("You dont have enough BTC units");
+                }
+            }
+        }
+        return user;
     }
 
 }

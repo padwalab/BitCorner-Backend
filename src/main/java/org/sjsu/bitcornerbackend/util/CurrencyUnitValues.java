@@ -9,16 +9,16 @@ public class CurrencyUnitValues {
     private static BigDecimal eurRate = new BigDecimal(47951.21);
     private static BigDecimal usdRate = new BigDecimal(58283.40);
 
-    public static BigDecimal getUnitValue(Currency currency, int unit) {
+    public static BigDecimal getUnitValue(Currency currency, BigDecimal unit) {
         switch (currency) {
             case GBP:
-                return gbpRate.multiply(new BigDecimal(unit));
+                return gbpRate.multiply(unit);
             case INR:
-                return inrRate.multiply(new BigDecimal(unit));
+                return inrRate.multiply(unit);
             case EUR:
-                return eurRate.multiply(new BigDecimal(unit));
+                return eurRate.multiply(unit);
             case USD:
-                return usdRate.multiply(new BigDecimal(unit));
+                return usdRate.multiply(unit);
             default:
                 return new BigDecimal(0);
         }

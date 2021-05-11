@@ -1,5 +1,6 @@
 package org.sjsu.bitcornerbackend.user;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
@@ -29,6 +30,9 @@ public interface IUserService {
     User addOrder(User user, Orders orders) throws BankAccountNotFoundException;
 
     User initiateOrder(Long userId, OrdersBuilder ordersBuilder)
+            throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException;
+
+    User initiateSellOrder(Long userId, BigDecimal units)
             throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException;
 
     Boolean checkNickname(String nickname) throws DuplicateNicknameException;

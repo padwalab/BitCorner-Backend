@@ -24,7 +24,7 @@ public class Orders {
     private long id;
 
     @Column(name = "units")
-    private int units;
+    private BigDecimal units;
 
     @Column(name = "currency")
     private Currency currency;
@@ -44,7 +44,7 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(long id, int units, OrderType type, OrderVariant variant, BigDecimal limitamt, Long user) {
+    public Orders(long id, BigDecimal units, OrderType type, OrderVariant variant, BigDecimal limitamt, Long user) {
         this.id = id;
         this.units = units;
         this.type = type;
@@ -78,11 +78,11 @@ public class Orders {
         this.id = id;
     }
 
-    public int getUnits() {
+    public BigDecimal getUnits() {
         return units;
     }
 
-    public void setUnits(int units) {
+    public void setUnits(BigDecimal units) {
         this.units = units;
     }
 

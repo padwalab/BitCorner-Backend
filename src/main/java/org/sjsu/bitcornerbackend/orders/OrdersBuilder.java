@@ -7,7 +7,7 @@ import org.sjsu.bitcornerbackend.util.OrderType;
 import org.sjsu.bitcornerbackend.util.OrderVariant;
 
 public class OrdersBuilder {
-    int units;
+    BigDecimal units;
     Currency currency;
 
     OrderType type;
@@ -18,7 +18,7 @@ public class OrdersBuilder {
 
     Long user;
 
-    public int getUnits() {
+    public BigDecimal getUnits() {
         return units;
     }
 
@@ -45,7 +45,7 @@ public class OrdersBuilder {
     public OrdersBuilder() {
     }
 
-    public OrdersBuilder setUnits(int units) {
+    public OrdersBuilder setUnits(BigDecimal units) {
         this.units = units;
         return this;
     }

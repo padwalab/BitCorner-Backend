@@ -17,6 +17,12 @@ public class BitcoinController {
     @GetMapping("/{currency}")
     public BigDecimal BTCRate(@PathVariable(value = "currency") Currency currency) {
         this.i = this.i.add(new BigDecimal((int) ((Math.random() * (10 - -10)) + -10)));
-        return CurrencyUnitValues.getUnitValue(currency, 1).add(i);
+        return CurrencyUnitValues.getUnitValue(currency, new BigDecimal(1)).add(i);
+    }
+
+    @GetMapping("/{currency}/{units}")
+    public BigDecimal BTCRateForUnits(@PathVariable(value = "currency") Currency currency,
+            @PathVariable(value = "units") BigDecimal units) {
+        return CurrencyUnitValues.getUnitValue(currency, units);
     }
 }
