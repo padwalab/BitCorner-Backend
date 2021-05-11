@@ -38,10 +38,6 @@ public class Orders {
     @Column(name = "limitamt")
     private BigDecimal limitamt;
 
-    // @JsonIgnoreProperties(value = { "orders" })
-    // @ManyToOne
-    // private BankAccount bankAccount;
-
     @Column(name = "userid")
     private Long user;
 

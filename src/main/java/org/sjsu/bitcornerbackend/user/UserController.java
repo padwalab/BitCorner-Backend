@@ -3,6 +3,7 @@ package org.sjsu.bitcornerbackend.user;
 import java.net.URI;
 import java.util.List;
 
+import org.sjsu.bitcornerbackend.exceptions.userExceptions.DuplicateNicknameException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,13 @@ public class UserController {
             throws UserNotFoundException, InvalidCredentialsException {
         User userResult = userService.update(userId, user);
         return ResponseEntity.ok().body(userResult);
+    }
+
+    @GetMapping("/unique/{nickname}")
+    public ResponseEntity<Boolean> checkUniqueNickName(@PathVariable(value = "nickname") String nickName)
+            throws DuplicateNicknameException {
+        Boolean unique = userService.checkNickname(nickName);
+        return ResponseEntity.ok().body(unique);
     }
 
 }

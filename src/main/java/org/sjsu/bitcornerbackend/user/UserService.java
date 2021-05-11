@@ -11,6 +11,7 @@ import org.sjsu.bitcornerbackend.bankAccount.BankAccountRepository;
 import org.sjsu.bitcornerbackend.currencies.Currencies;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
+import org.sjsu.bitcornerbackend.exceptions.userExceptions.DuplicateNicknameException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.orders.Orders;
@@ -112,6 +113,16 @@ public class UserService implements IUserService {
             }
         }
         return user;
+    }
+
+    @Override
+    public Boolean checkNickname(String nickname) throws DuplicateNicknameException {
+
+        User user = userRepository.findByNickName(nickname);
+        if (user != null) {
+            throw new DuplicateNicknameException("Nickname is taken");
+        }
+        return true;
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
+import org.sjsu.bitcornerbackend.exceptions.userExceptions.DuplicateNicknameException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.InvalidCredentialsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.orders.Orders;
@@ -29,4 +30,6 @@ public interface IUserService {
 
     User initiateOrder(Long userId, OrdersBuilder ordersBuilder)
             throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException;
+
+    Boolean checkNickname(String nickname) throws DuplicateNicknameException;
 }

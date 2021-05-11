@@ -2,13 +2,11 @@ package org.sjsu.bitcornerbackend.orders;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.user.User;
-import org.sjsu.bitcornerbackend.user.UserRepository;
 import org.sjsu.bitcornerbackend.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
