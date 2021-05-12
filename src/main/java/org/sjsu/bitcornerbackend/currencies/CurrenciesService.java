@@ -20,19 +20,23 @@ public class CurrenciesService implements ICurrencyService {
     public Set<Currencies> createDefaultCurrencies() {
         Set<Currencies> currencySet = new HashSet<>();
 
-        Currencies BTC = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setCurrency(Currency.BTC).build();
+        Currencies BTC = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setHold(new BigDecimal(0))
+                .setCurrency(Currency.BTC).build();
         BTC = currenciesRepository.save(BTC);
         currencySet.add(BTC);
 
-        Currencies Usd = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setCurrency(Currency.USD).build();
+        Currencies Usd = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setHold(new BigDecimal(0))
+                .setCurrency(Currency.USD).build();
         Usd = currenciesRepository.save(Usd);
         currencySet.add(Usd);
 
-        Currencies Inr = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setCurrency(Currency.INR).build();
+        Currencies Inr = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setHold(new BigDecimal(0))
+                .setCurrency(Currency.INR).build();
         Inr = currenciesRepository.save(Inr);
         currencySet.add(Inr);
 
-        Currencies Gbp = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setCurrency(Currency.GBP).build();
+        Currencies Gbp = new CurrenciesBuilder().setAmount(new BigDecimal(0)).setHold(new BigDecimal(0))
+                .setCurrency(Currency.GBP).build();
         Gbp = currenciesRepository.save(Gbp);
         currencySet.add(Gbp);
 

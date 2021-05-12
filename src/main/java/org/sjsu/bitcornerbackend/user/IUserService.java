@@ -29,6 +29,8 @@ public interface IUserService {
 
     User addOrder(User user, Orders orders) throws BankAccountNotFoundException;
 
+    User addSellOrder(User user, Orders orders) throws BankAccountNotFoundException;
+
     User initiateOrder(Long userId, OrdersBuilder ordersBuilder)
             throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException;
 

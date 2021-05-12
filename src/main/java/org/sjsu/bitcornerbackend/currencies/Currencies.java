@@ -28,18 +28,23 @@ public class Currencies {
     @Column(name = "balance", nullable = false)
     private BigDecimal amount;
 
+    @Column(name = "hold")
+    private BigDecimal hold;
+
     public Currencies() {
     }
 
-    public Currencies(long id, Currency currency, BigDecimal amount) {
+    public Currencies(long id, Currency currency, BigDecimal amount, BigDecimal hold) {
         this.id = id;
         this.currency = currency;
         this.amount = amount;
+        this.hold = hold;
     }
 
     public Currencies(CurrenciesBuilder currenciesBuilder) {
         this.currency = currenciesBuilder.currency;
         this.amount = currenciesBuilder.amount;
+        this.hold = currenciesBuilder.hold;
     }
 
     public long getId() {
@@ -64,6 +69,14 @@ public class Currencies {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public BigDecimal getHold() {
+        return hold;
+    }
+
+    public void setHold(BigDecimal hold) {
+        this.hold = hold;
     }
 
     @Override

@@ -33,6 +33,11 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.all());
     }
 
+    @GetMapping("/all/{id}")
+    public ResponseEntity<List<Orders>> getAllOrders(@PathVariable(value = "id") Long userId) {
+        return ResponseEntity.ok().body(orderService.all());
+    }
+
     @PostMapping("/buy/{id}")
     public ResponseEntity<User> createBuyOrder(@PathVariable(name = "id") Long userId,
             @RequestBody OrdersBuilder ordersBuilder)
@@ -54,7 +59,7 @@ public class OrderController {
         User user = userService.initiateSellOrder(userId, ordersBuilder.units);
         ordersBuilder.setType(OrderType.SELL);
         Orders orders = orderService.createOrder(ordersBuilder.setUser(userId));
-        user = userService.addOrder(user, orders);
+        user = userService.addSellOrder(user, orders);
 
         return ResponseEntity.created(URI.create(String.format("/api/orders/%s", orders.getId()))).body(user);
     }

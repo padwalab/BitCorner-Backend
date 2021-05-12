@@ -8,6 +8,7 @@ public class CurrenciesBuilder {
     long id;
     Currency currency;
     BigDecimal amount;
+    BigDecimal hold;
 
     public CurrenciesBuilder() {
 
@@ -20,6 +21,11 @@ public class CurrenciesBuilder {
 
     public CurrenciesBuilder setAmount(BigDecimal amount) {
         this.amount = amount;
+        return this;
+    }
+
+    public CurrenciesBuilder setHold(BigDecimal hold) {
+        this.hold = hold;
         return this;
     }
 

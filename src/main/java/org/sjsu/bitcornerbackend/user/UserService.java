@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
 import org.sjsu.bitcornerbackend.bankAccount.BankAccountRepository;
 import org.sjsu.bitcornerbackend.currencies.Currencies;
+import org.sjsu.bitcornerbackend.currencies.CurrenciesRepository;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.DuplicateNicknameException;
@@ -29,6 +30,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private BankAccountRepository bankAccountRepository;
+
+    @Autowired
+    private CurrenciesRepository currenciesRepository;
 
     @Override
     public List<User> listUsers() {
@@ -95,6 +99,34 @@ public class UserService implements IUserService {
         Set<Orders> userOrders = userBankAccount.getOrders();
         userOrders.add(orders);
         userBankAccount.setOrders(userOrders);
+        Set<Currencies> userCurrencies = userBankAccount.getCurrencies();
+        for (Currencies currencies : userCurrencies) {
+            if (orders.getCurrency() == currencies.getCurrency()) {
+                BigDecimal amount = CurrencyUnitValues.getUnitValue(orders.getCurrency(), orders.getUnits());
+                currencies.setHold(amount);
+                currenciesRepository.save(currencies);
+            }
+        }
+        userBankAccount.setCurrencies(userCurrencies);
+        bankAccountRepository.save(userBankAccount);
+        user = userRepository.save(user);
+        return user;
+    }
+
+    @Override
+    public User addSellOrder(User user, Orders orders) throws BankAccountNotFoundException {
+        BankAccount userBankAccount = user.getBankAccount();
+        Set<Orders> userOrders = userBankAccount.getOrders();
+        userOrders.add(orders);
+        userBankAccount.setOrders(userOrders);
+        Set<Currencies> userCurrencies = userBankAccount.getCurrencies();
+        for (Currencies currencies : userCurrencies) {
+            if (currencies.getCurrency() == Currency.BTC) {
+                currencies.setHold(currencies.getHold().add(orders.getUnits()));
+                currenciesRepository.save(currencies);
+            }
+        }
+        userBankAccount.setCurrencies(userCurrencies);
         bankAccountRepository.save(userBankAccount);
         user = userRepository.save(user);
         return user;
@@ -111,7 +143,7 @@ public class UserService implements IUserService {
         BigDecimal amount = CurrencyUnitValues.getUnitValue(ordersBuilder.getCurrency(), ordersBuilder.getUnits());
         for (Currencies currencies : user.getBankAccount().getCurrencies()) {
             if (currencies.getCurrency() == ordersBuilder.getCurrency()) {
-                if (amount.compareTo(currencies.getAmount()) > 0) {
+                if (amount.compareTo(currencies.getAmount().subtract(currencies.getHold())) > 0) {
                     throw new InsufficientFundsException("You don't have enough funds to buy bitcoin");
                 }
             }
@@ -139,7 +171,7 @@ public class UserService implements IUserService {
         }
         for (Currencies currencies : user.getBankAccount().getCurrencies()) {
             if (currencies.getCurrency() == Currency.BTC) {
-                if (units.compareTo(currencies.getAmount()) > 0) {
+                if (units.compareTo(currencies.getAmount().subtract(currencies.getHold())) > 0) {
                     throw new InsufficientFundsException("You dont have enough BTC units");
                 }
             }
