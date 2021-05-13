@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.user.User;
 import org.sjsu.bitcornerbackend.user.UserService;
+import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,11 @@ public class OrderService implements IOrderService {
         User user = userService.findById(id);
         Set<Orders> userOrders = user.getBankAccount().getOrders();
         return userOrders;
+    }
+
+    @Override
+    public List<Orders> findByStatus(OrderStatus status) {
+        return ordersRepository.findByStatus(status);
     }
 
 }

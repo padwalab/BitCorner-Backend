@@ -1,8 +1,10 @@
 package org.sjsu.bitcornerbackend.orders;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.sjsu.bitcornerbackend.util.Currency;
+import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.sjsu.bitcornerbackend.util.OrderType;
 import org.sjsu.bitcornerbackend.util.OrderVariant;
 
@@ -16,7 +18,12 @@ public class OrdersBuilder {
 
     BigDecimal limitamt;
 
+    Date createdDate;
+    // Date lastModifiedDate;
+
     Long user;
+
+    OrderStatus status;
 
     public BigDecimal getUnits() {
         return units;
@@ -72,6 +79,16 @@ public class OrdersBuilder {
 
     public OrdersBuilder setUser(Long user) {
         this.user = user;
+        return this;
+    }
+
+    public OrdersBuilder setStatus(OrderStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public OrdersBuilder setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
         return this;
     }
 

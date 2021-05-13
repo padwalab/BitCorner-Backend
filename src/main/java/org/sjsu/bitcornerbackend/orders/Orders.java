@@ -1,6 +1,7 @@
 package org.sjsu.bitcornerbackend.orders;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.sjsu.bitcornerbackend.util.Currency;
+import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.sjsu.bitcornerbackend.util.OrderType;
 import org.sjsu.bitcornerbackend.util.OrderVariant;
 
@@ -41,16 +43,33 @@ public class Orders {
     @Column(name = "userid")
     private Long user;
 
+    @Column(name = "status")
+    private OrderStatus status;
+
+    @Column(name = "created_date")
+    private Date createdDate;
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
     public Orders() {
     }
 
-    public Orders(long id, BigDecimal units, OrderType type, OrderVariant variant, BigDecimal limitamt, Long user) {
+    public Orders(long id, BigDecimal units, OrderType type, OrderVariant variant, BigDecimal limitamt, Long user,
+            OrderStatus status, Date createdDate, Date lastModifiedDate) {
         this.id = id;
         this.units = units;
         this.type = type;
         this.variant = variant;
         this.limitamt = limitamt;
         this.user = user;
+        this.status = status;
+        this.createdDate = createdDate;
     }
 
     public Currency getCurrency() {
@@ -68,6 +87,8 @@ public class Orders {
         this.variant = ordersBuilder.variant;
         this.units = ordersBuilder.units;
         this.currency = ordersBuilder.currency;
+        this.status = ordersBuilder.status;
+        this.createdDate = ordersBuilder.createdDate;
     }
 
     public long getId() {
@@ -116,6 +137,14 @@ public class Orders {
 
     public void setUser(Long user) {
         this.user = user;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     @Override
