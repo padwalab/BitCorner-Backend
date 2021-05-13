@@ -1,7 +1,6 @@
 package org.sjsu.bitcornerbackend.orders;
 
 import java.util.List;
-import java.util.Set;
 
 import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;

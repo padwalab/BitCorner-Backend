@@ -19,8 +19,6 @@ public class OrdersBuilder {
     BigDecimal limitamt;
 
     Date createdDate;
-    // Date lastModifiedDate;
-
     Long user;
 
     OrderStatus status;

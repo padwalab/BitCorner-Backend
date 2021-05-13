@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.OrderBy;
-
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
