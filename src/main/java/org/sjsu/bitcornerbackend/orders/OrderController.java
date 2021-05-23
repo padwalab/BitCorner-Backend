@@ -45,6 +45,16 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.all());
     }
 
+    @GetMapping("/bids/open")
+    public ResponseEntity<List<Orders>> getOpenBids() {
+        return ResponseEntity.ok().body(orderService.findByStatus(OrderStatus.PENDING, OrderType.BUY));
+    }
+
+    @GetMapping("/asks/open")
+    public ResponseEntity<List<Orders>> getOpenAsks() {
+        return ResponseEntity.ok().body(orderService.findByStatus(OrderStatus.PENDING, OrderType.SELL));
+    }
+
     @PostMapping("/buy/{id}")
     public ResponseEntity<User> createBuyOrder(@PathVariable(name = "id") Long userId,
             @RequestBody OrdersBuilder ordersBuilder) throws InsufficientFundsException, UserNotFoundException,

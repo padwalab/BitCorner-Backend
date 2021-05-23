@@ -76,7 +76,7 @@ public class OrderService implements IOrderService {
 
     public void transact(List<Orders> bOrders, List<Orders> sOrders, Currency currency) throws UserNotFoundException {
         BigDecimal btcRate = CurrencyUnitValues.getUnitValue(currency, new BigDecimal(1));
-        System.out.println("transact");
+        System.out.println("transact\nborders: " + bOrders.toString() + "\nsellorders: " + sOrders.toString());
 
         for (Orders order : bOrders) {
             System.out.println("handing buy orders");
@@ -185,11 +185,17 @@ public class OrderService implements IOrderService {
                         System.out.println("let check this");
                         break;
                     } else if (currentBuyOrder.getValue().compareTo(sellRunningTotal) == 0) {
-                        transact(sellOrders, buyOrders.subList(0, currentBuyOrder.getKey() + 1), currency);
+                        transact(buyOrders.subList(0, currentBuyOrder.getKey() + 1), sellOrders, currency);
                     }
                 }
 
             }
         }
+    }
+
+    @Override
+    public List<Orders> findByStatus(OrderStatus status, OrderType type) {
+        List<Orders> bidOrders = ordersRepository.findByStatusAndTypeOrderByCreatedDateAsc(status, type);
+        return bidOrders;
     }
 }
