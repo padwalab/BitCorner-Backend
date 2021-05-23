@@ -3,10 +3,10 @@ package org.sjsu.bitcornerbackend.orders;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
-
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
+
 import org.sjsu.bitcornerbackend.user.User;
 import org.sjsu.bitcornerbackend.user.UserService;
 import org.sjsu.bitcornerbackend.util.OrderStatus;
@@ -47,8 +47,8 @@ public class OrderController {
 
     @PostMapping("/buy/{id}")
     public ResponseEntity<User> createBuyOrder(@PathVariable(name = "id") Long userId,
-            @RequestBody OrdersBuilder ordersBuilder)
-            throws InsufficientFundsException, UserNotFoundException, BankAccountNotFoundException {
+            @RequestBody OrdersBuilder ordersBuilder) throws InsufficientFundsException, UserNotFoundException,
+            BankAccountNotFoundException, InterruptedException {
 
         User user = userService.initiateOrder(userId, ordersBuilder);
         ordersBuilder.setType(OrderType.BUY);
@@ -57,6 +57,8 @@ public class OrderController {
         ordersBuilder.setCreatedDate(now);
         Orders orders = orderService.createOrder(ordersBuilder.setUser(userId));
         user = userService.addOrder(user, orders);
+
+        orderService.execBuy(orders.getCurrency());
 
         return ResponseEntity.created(URI.create(String.format("/api/orders/%s", orders.getId()))).body(user);
     }
@@ -69,8 +71,12 @@ public class OrderController {
         User user = userService.initiateSellOrder(userId, ordersBuilder.units);
         ordersBuilder.setType(OrderType.SELL);
         ordersBuilder.setStatus(OrderStatus.PENDING);
+        Date now = new Date();
+        ordersBuilder.setCreatedDate(now);
         Orders orders = orderService.createOrder(ordersBuilder.setUser(userId));
         user = userService.addSellOrder(user, orders);
+
+        orderService.execBuy(orders.getCurrency());
 
         return ResponseEntity.created(URI.create(String.format("/api/orders/%s", orders.getId()))).body(user);
     }

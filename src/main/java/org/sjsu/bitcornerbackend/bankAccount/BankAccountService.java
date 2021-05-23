@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import org.sjsu.bitcornerbackend.currencies.Currencies;
 import org.sjsu.bitcornerbackend.currencies.CurrenciesRepository;
+import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.user.User;
@@ -56,15 +57,16 @@ public class BankAccountService implements IBankAccountService {
     }
 
     @Override
-    public User withdraw(long userId, Currency currency, BigDecimal amount) throws UserNotFoundException, InsufficientFundsException {
+    public User withdraw(long userId, Currency currency, BigDecimal amount)
+            throws UserNotFoundException, InsufficientFundsException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
 
         BankAccount uBankAccount = user.getBankAccount();
 
         for (Currencies currencies : uBankAccount.getCurrencies()) {
-            if (currencies.getCurrency() == currency ) {
-                if (currencies.getAmount().compareTo(amount) < 0){
+            if (currencies.getCurrency() == currency) {
+                if (currencies.getAmount().compareTo(amount) < 0) {
                     throw new InsufficientFundsException("Insufficient funds...");
                 }
                 currencies.setAmount(currencies.getAmount().subtract(amount));
@@ -76,6 +78,17 @@ public class BankAccountService implements IBankAccountService {
         uBankAccount = bankAccountRepository.save(uBankAccount);
         user = userRepository.save(user);
         return user;
+    }
+
+    @Override
+    public BankAccount getBankAccountForUserId(long userId) throws UserNotFoundException, BankAccountNotFoundException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("user with id: " + userId + " does not exist"));
+        BankAccount userBankAccount = user.getBankAccount();
+        if (userBankAccount == null) {
+            throw new BankAccountNotFoundException("user has not registered bank account please create one.");
+        }
+        return userBankAccount;
     }
 
 }
