@@ -22,10 +22,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class BillController {
     @Autowired
     private IBillService billService;
+    @Autowired
+    private BillRepository billRepository;
 
     @GetMapping("/all")
     public List<Bill> GetAllBills() {
         return billService.getAllBills();
+    }
+
+    @GetMapping("/sent/{id}")
+    public List<Bill> GetAllSentBills(@PathVariable(name = "id") Long userId) {
+        return billRepository.findBySender(userId);
+    }
+
+    @GetMapping("/recieved/{id}")
+    public List<Bill> GetAllRecievedBills(@PathVariable(name = "id") Long userId) {
+        return billRepository.findByPayer(userId);
     }
 
     @PostMapping

@@ -45,7 +45,7 @@ public class BillService implements IBillService {
         if (payer.getId() == sender.getId()) {
             throw new SamePayerSenderException("can not send bill to yourself");
         }
-        Bill bill = billBuilder.build(payer.getBankAccount().getId());
+        Bill bill = billBuilder.build(payer.getId());
         bill = billRepository.save(bill);
         userService.addBillRecieved(payer.getId(), bill);
         sender = userService.addBillCreated(sender.getId(), bill);
