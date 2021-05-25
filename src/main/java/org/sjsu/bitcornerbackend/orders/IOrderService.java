@@ -13,8 +13,9 @@ public interface IOrderService {
     Set<Orders> all(Long id) throws UserNotFoundException;
 
     List<Orders> findByStatus(OrderStatus status);
-    
+
     List<Orders> findByStatus(OrderStatus status, OrderType type);
 
     Orders createOrder(OrdersBuilder ordersBuilder);
+
 }

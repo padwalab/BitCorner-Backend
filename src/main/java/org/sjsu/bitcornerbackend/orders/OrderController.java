@@ -11,6 +11,7 @@ import org.sjsu.bitcornerbackend.user.User;
 import org.sjsu.bitcornerbackend.user.UserService;
 import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.sjsu.bitcornerbackend.util.OrderType;
+import org.sjsu.bitcornerbackend.util.OrderVariant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,7 +69,19 @@ public class OrderController {
         Orders orders = orderService.createOrder(ordersBuilder.setUser(userId));
         user = userService.addOrder(user, orders);
 
-        orderService.execBuy(orders.getCurrency());
+        // orderService.execMarketOrders(orders.getCurrency());
+        switch (orders.getVariant()) {
+            case LIMIT:
+                System.out.println("Thinking about how to handle these orders");
+                orderService.execLimitOrders(orders);
+                break;
+            case MARKET:
+                orderService.execMarketOrders(orders.getCurrency());
+                break;
+            default:
+                orderService.execMarketOrders(orders.getCurrency());
+                break;
+        }
 
         return ResponseEntity.created(URI.create(String.format("/api/orders/%s", orders.getId()))).body(user);
     }
@@ -86,7 +99,18 @@ public class OrderController {
         Orders orders = orderService.createOrder(ordersBuilder.setUser(userId));
         user = userService.addSellOrder(user, orders);
 
-        orderService.execBuy(orders.getCurrency());
+        switch (orders.getVariant()) {
+            case LIMIT:
+                System.out.println("Thinking about how to handle these orders");
+                orderService.execLimitOrders(orders);
+                break;
+            case MARKET:
+                orderService.execMarketOrders(orders.getCurrency());
+                break;
+            default:
+                orderService.execMarketOrders(orders.getCurrency());
+                break;
+        }
 
         return ResponseEntity.created(URI.create(String.format("/api/orders/%s", orders.getId()))).body(user);
     }

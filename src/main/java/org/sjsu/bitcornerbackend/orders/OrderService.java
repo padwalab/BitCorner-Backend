@@ -1,6 +1,7 @@
 package org.sjsu.bitcornerbackend.orders;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.sjsu.bitcornerbackend.util.Currency;
 import org.sjsu.bitcornerbackend.util.CurrencyUnitValues;
 import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.sjsu.bitcornerbackend.util.OrderType;
+import org.sjsu.bitcornerbackend.util.OrderVariant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -151,8 +153,75 @@ public class OrderService implements IOrderService {
 
     }
 
-    public void execBuy(Currency currency) throws UserNotFoundException {
-        System.out.println("int the thread");
+    public void execLimitOrders(Orders order) throws UserNotFoundException {
+        List<Orders> executableOrders = new ArrayList<>();
+        List<Orders> borders = ordersRepository.findByTypeAndStatusAndCurrencyOrderByLimitamtDescCreatedDateAsc(
+                OrderType.BUY, OrderStatus.PENDING, order.getCurrency());
+        System.out.println(borders);
+        List<Orders> sorders = ordersRepository.findByTypeAndStatusAndCurrencyOrderByLimitamtAscCreatedDateAsc(
+                OrderType.SELL, OrderStatus.PENDING, order.getCurrency());
+        System.out.println(sorders);
+        // findByStatusAndCurrency
+
+        switch (order.getType()) {
+            case BUY:
+                BigDecimal minSellOrders = new BigDecimal(1000000000);
+                if (sorders.size() > 0) {
+                    for (Orders sorder : sorders) {
+                        if (sorder.getLimitamt() == null) {
+                            executableOrders.add(sorder);
+                        } else {
+                            if (sorder.getLimitamt().compareTo(borders.get(0).getLimitamt()) <= 0) {
+                                executableOrders.add(sorder);
+                                if (sorder.getLimitamt().compareTo(minSellOrders) < 0) {
+                                    minSellOrders = sorder.getLimitamt();
+                                }
+                            }
+                        }
+                    }
+                    for (Orders border : borders) {
+                        if (border.getLimitamt().compareTo(minSellOrders) >= 0) {
+                            executableOrders.add(border);
+                        }
+                    }
+                }
+                break;
+            case SELL:
+                BigDecimal maxBuyOrders = new BigDecimal(0);
+                if (borders.size() > 0) {
+                    for (Orders border : borders) {
+                        if (border.getLimitamt().compareTo(sorders.get(0).getLimitamt()) >= 0) {
+                            executableOrders.add(border);
+                            if (border.getLimitamt().compareTo(maxBuyOrders) > 0) {
+                                maxBuyOrders = border.getLimitamt();
+                            }
+                        }
+                    }
+                    for (Orders sorder : sorders) {
+                        if (sorder.getLimitamt().compareTo(maxBuyOrders) <= 0) {
+                            executableOrders.add(sorder);
+                        }
+                    }
+                }
+                break;
+        }
+
+        // executableOrders.addAll(borders);
+        // executableOrders.addAll(sorders);
+
+        execBuy(order.getCurrency(), executableOrders);
+
+    }
+
+    public void execMarketOrders(Currency currency) throws UserNotFoundException {
+        List<Orders> executableOrders = ordersRepository
+                .findByStatusAndCurrencyOrderByCreatedDateAsc(OrderStatus.PENDING, currency);
+
+        execBuy(currency, executableOrders);
+    }
+
+    public void execBuy(Currency currency, List<Orders> executableOrders) throws UserNotFoundException {
+        System.out.println("int the thread\nexecutable orders: " + executableOrders.toString());
         LinkedHashMap<Integer, BigDecimal> buyOrdersCumulative = new LinkedHashMap<Integer, BigDecimal>();
         LinkedHashMap<Integer, BigDecimal> sellOrdersCumulative = new LinkedHashMap<Integer, BigDecimal>();
         List<Orders> buyOrders = new ArrayList<>();
@@ -161,8 +230,7 @@ public class OrderService implements IOrderService {
         int j = 0;
         BigDecimal buyRunningTotal = new BigDecimal(0);
         BigDecimal sellRunningTotal = new BigDecimal(0);
-        for (Orders order : ordersRepository.findByStatusAndCurrencyOrderByCreatedDateAsc(OrderStatus.PENDING,
-                currency)) {
+        for (Orders order : executableOrders) {
             System.out.println(order);
             if (order.getType() == OrderType.BUY) {
                 buyOrders.add(order);
@@ -174,6 +242,7 @@ public class OrderService implements IOrderService {
                         break;
                     } else if (currentSellOrder.getValue().compareTo(buyRunningTotal) == 0) {
                         transact(buyOrders, sellOrders.subList(0, currentSellOrder.getKey() + 1), currency);
+                        return;
                     }
                 }
             } else if (order.getType() == OrderType.SELL) {
@@ -186,6 +255,7 @@ public class OrderService implements IOrderService {
                         break;
                     } else if (currentBuyOrder.getValue().compareTo(sellRunningTotal) == 0) {
                         transact(buyOrders.subList(0, currentBuyOrder.getKey() + 1), sellOrders, currency);
+                        return;
                     }
                 }
 
