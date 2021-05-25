@@ -13,6 +13,7 @@ import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException
 import org.sjsu.bitcornerbackend.user.User;
 import org.sjsu.bitcornerbackend.user.UserRepository;
 import org.sjsu.bitcornerbackend.user.UserService;
+import org.sjsu.bitcornerbackend.util.BillStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,4 +52,26 @@ public class BillService implements IBillService {
 
         return sender;
     }
+
+    @Override
+    public Bill cancelBill(Long billId) throws InvalidBillDetails {
+        Bill bill = billRepository.findById(billId).orElseThrow(() -> new InvalidBillDetails("Bill does not exist"));
+        bill.setStatus(BillStatus.CANCELLED);
+        billRepository.save(bill);
+        return bill;
+    }
+
+    @Override
+    public Bill rejectBill(Long billId) throws InvalidBillDetails {
+        Bill bill = billRepository.findById(billId).orElseThrow(() -> new InvalidBillDetails("Bill does not exist"));
+        bill.setStatus(BillStatus.REJECTED);
+        billRepository.save(bill);
+        return bill;
+    }
+
+    // @Override
+    // public Bill payBill(Long billId) {
+
+    // return null;
+    // }
 }

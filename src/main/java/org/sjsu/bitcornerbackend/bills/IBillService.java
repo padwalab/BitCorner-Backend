@@ -13,4 +13,10 @@ public interface IBillService {
 
     public User createBill(BillBuilder billBuilder)
             throws InvalidBillDetails, UserNotFoundException, BankAccountNotFoundException, SamePayerSenderException;
+
+    public Bill cancelBill(Long billId) throws InvalidBillDetails;
+
+    public Bill rejectBill(Long billId) throws InvalidBillDetails;
+
+    // public Bill payBill(Long billId);
 }
