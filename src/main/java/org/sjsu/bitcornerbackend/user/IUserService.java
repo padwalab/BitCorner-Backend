@@ -3,6 +3,7 @@ package org.sjsu.bitcornerbackend.user;
 import java.math.BigDecimal;
 import java.util.List;
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
+import org.sjsu.bitcornerbackend.bills.Bill;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.DuplicateNicknameException;
@@ -13,6 +14,8 @@ import org.sjsu.bitcornerbackend.orders.OrdersBuilder;
 
 public interface IUserService {
         List<User> listUsers();
+
+        User findByUserEmail(String email) throws UserNotFoundException;
 
         User createUser(UserBuilder userBuilder);
 
@@ -37,4 +40,8 @@ public interface IUserService {
                         throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException;
 
         Boolean checkNickname(String nickname) throws DuplicateNicknameException;
+
+        User addBillCreated(Long userId, Bill bill) throws UserNotFoundException, BankAccountNotFoundException;
+
+        User addBillRecieved(Long userId, Bill bill) throws UserNotFoundException, BankAccountNotFoundException;
 }

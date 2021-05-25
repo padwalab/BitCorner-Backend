@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
 import org.sjsu.bitcornerbackend.bankAccount.BankAccountRepository;
+import org.sjsu.bitcornerbackend.bills.Bill;
 import org.sjsu.bitcornerbackend.currencies.Currencies;
 import org.sjsu.bitcornerbackend.currencies.CurrenciesRepository;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
@@ -176,6 +177,46 @@ public class UserService implements IUserService {
                 }
             }
         }
+        return user;
+    }
+
+    @Override
+    public User findByUserEmail(String email) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("no user exist for email: " + email));
+        return user;
+    }
+
+    @Override
+    public User addBillCreated(Long userId, Bill bill) throws UserNotFoundException, BankAccountNotFoundException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
+        BankAccount userBankAccount = user.getBankAccount();
+        if (userBankAccount == null) {
+            throw new BankAccountNotFoundException("User does not have a bank account");
+        }
+        List<Bill> userBillCreated = userBankAccount.getBills();
+        userBillCreated.add(bill);
+        userBankAccount.setBills(userBillCreated);
+        bankAccountRepository.save(userBankAccount);
+        user = userRepository.save(user);
+        return user;
+    }
+
+    @Override
+    public User addBillRecieved(Long userId, Bill bill) throws UserNotFoundException, BankAccountNotFoundException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
+        BankAccount userBankAccount = user.getBankAccount();
+        if (userBankAccount == null) {
+            throw new BankAccountNotFoundException("User does not have a bank account");
+        }
+        List<Bill> userBillRecieved = userBankAccount.getRecievedBills();
+        userBillRecieved.add(bill);
+        userBankAccount.setRecievedBills(userBillRecieved);
+        bankAccountRepository.save(userBankAccount);
+        user = userRepository.save(user);
         return user;
     }
 

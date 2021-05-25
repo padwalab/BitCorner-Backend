@@ -1,5 +1,6 @@
 package org.sjsu.bitcornerbackend.bankAccount;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.SequenceGenerator;
 
 import javax.persistence.Table;
 
+import org.sjsu.bitcornerbackend.bills.Bill;
 import org.sjsu.bitcornerbackend.currencies.Currencies;
 import org.sjsu.bitcornerbackend.orders.Orders;
 import org.sjsu.bitcornerbackend.util.Currency;
@@ -38,17 +40,17 @@ public class BankAccount {
     @Column(name = "currency", nullable = false)
     private Currency currency;
 
-    // @Column(name = "balance", nullable = false)
-    // private BigDecimal balance;
-
-    // @Column(name = "bitcoin", nullable = false)
-    // private BigDecimal bitcoin;
-
     @OneToMany
     private Set<Currencies> currencies;
 
     @OneToMany
     private Set<Orders> orders;
+
+    @OneToMany
+    private List<Bill> bills;
+
+    @OneToMany
+    private List<Bill> recievedBills;
 
     public BankAccount() {
     }
@@ -101,22 +103,6 @@ public class BankAccount {
         this.currency = currency;
     }
 
-    // public BigDecimal getBalance() {
-    // return balance;
-    // }
-
-    // public void setBalance(BigDecimal balance) {
-    // this.balance = balance;
-    // }
-
-    // public BigDecimal getBitcoin() {
-    // return bitcoin;
-    // }
-
-    // public void setBitcoin(BigDecimal bitcoin) {
-    // this.bitcoin = bitcoin;
-    // }
-
     public Set<Currencies> getCurrencies() {
         return currencies;
     }
@@ -131,6 +117,22 @@ public class BankAccount {
 
     public void setOrders(Set<Orders> orders) {
         this.orders = orders;
+    }
+
+    public List<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(List<Bill> bills) {
+        this.bills = bills;
+    }
+
+    public List<Bill> getRecievedBills() {
+        return recievedBills;
+    }
+
+    public void setRecievedBills(List<Bill> recievedBills) {
+        this.recievedBills = recievedBills;
     }
 
     @Override
