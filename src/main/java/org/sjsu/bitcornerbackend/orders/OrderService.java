@@ -3,6 +3,7 @@ package org.sjsu.bitcornerbackend.orders;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,189 @@ public class OrderService implements IOrderService {
     // System.out.println(ordersRepository.findAll());
     // }).start();
     // }
+    public Orders transfer(Orders buyer, Orders seller) throws UserNotFoundException {
+        if (buyer.getUnits().compareTo(seller.getUnits()) > 0) {
+            BigDecimal basePrice;
+            if (seller.getLimitamt().compareTo(buyer.getLimitamt()) < 0) {
+                basePrice = seller.getLimitamt();
+            } else {
+                basePrice = buyer.getLimitamt();
+            }
+            basePrice = basePrice.multiply(seller.getUnits());
+            User buyerProfile = userService.findById(buyer.getUser());
+            User sellerProfile = userService.findById(seller.getUser());
+            BankAccount buyerBankAccount = buyerProfile.getBankAccount();
+            BankAccount sellerBankAccount = sellerProfile.getBankAccount();
+            Set<Currencies> buyerCurrencies = buyerBankAccount.getCurrencies();
+            for (Currencies curr : buyerCurrencies) {
+                if (curr.getCurrency() == buyer.getCurrency()) {
+                    BigDecimal balance = curr.getAmount().subtract(basePrice);
+                    curr.setAmount(balance);
+                    curr.setHold(curr.getHold().subtract(basePrice));
+                    currenciesRepository.save(curr);
+                } else if (curr.getCurrency() == Currency.BTC) {
+                    curr.setAmount(curr.getAmount().add(seller.getUnits()));
+                    currenciesRepository.save(curr);
+                }
+            }
+            buyerBankAccount.setCurrencies(buyerCurrencies);
+            bankAccountRepository.save(buyerBankAccount);
+            buyerProfile.setBankAccount(buyerBankAccount);
+            userRepository.save(buyerProfile);
+
+            Set<Currencies> sellerCurrencies = sellerBankAccount.getCurrencies();
+            for (Currencies curr : sellerCurrencies) {
+                if (curr.getCurrency() == buyer.getCurrency()) {
+                    // here you'll have to take percentage from seller
+                    BigDecimal balance = curr.getAmount().add(basePrice);
+                    curr.setAmount(balance);
+                    currenciesRepository.save(curr);
+                } else if (curr.getCurrency() == Currency.BTC) {
+                    curr.setAmount(curr.getAmount().subtract(seller.getUnits()));
+                    curr.setHold(curr.getHold().subtract(seller.getUnits()));
+                    currenciesRepository.save(curr);
+                }
+            }
+            sellerBankAccount.setCurrencies(sellerCurrencies);
+            bankAccountRepository.save(sellerBankAccount);
+            sellerProfile.setBankAccount(sellerBankAccount);
+            userRepository.save(sellerProfile);
+            seller.setStatus(OrderStatus.EXECUTED);
+            ordersRepository.save(seller);
+
+            buyer.setUnits(buyer.getUnits().subtract(seller.getUnits()));
+            return buyer;
+
+        } else if (buyer.getUnits().compareTo(seller.getUnits()) < 0) {
+            BigDecimal basePrice;
+            if (seller.getLimitamt().compareTo(buyer.getLimitamt()) < 0) {
+                basePrice = seller.getLimitamt();
+            } else {
+                basePrice = buyer.getLimitamt();
+            }
+            basePrice = basePrice.multiply(buyer.getUnits());
+            User buyerProfile = userService.findById(buyer.getUser());
+            User sellerProfile = userService.findById(seller.getUser());
+            BankAccount buyerBankAccount = buyerProfile.getBankAccount();
+            BankAccount sellerBankAccount = sellerProfile.getBankAccount();
+            Set<Currencies> buyerCurrencies = buyerBankAccount.getCurrencies();
+            for (Currencies curr : buyerCurrencies) {
+                if (curr.getCurrency() == buyer.getCurrency()) {
+                    BigDecimal balance = curr.getAmount().subtract(basePrice);
+                    curr.setAmount(balance);
+                    curr.setHold(curr.getHold().subtract(basePrice));
+                    currenciesRepository.save(curr);
+                } else if (curr.getCurrency() == Currency.BTC) {
+                    curr.setAmount(curr.getAmount().add(buyer.getUnits()));
+                    currenciesRepository.save(curr);
+                }
+            }
+            buyerBankAccount.setCurrencies(buyerCurrencies);
+            bankAccountRepository.save(buyerBankAccount);
+            buyerProfile.setBankAccount(buyerBankAccount);
+            userRepository.save(buyerProfile);
+
+            Set<Currencies> sellerCurrencies = sellerBankAccount.getCurrencies();
+            for (Currencies curr : sellerCurrencies) {
+                if (curr.getCurrency() == buyer.getCurrency()) {
+                    // here you'll have to take percentage from seller
+                    BigDecimal balance = curr.getAmount().add(basePrice);
+                    curr.setAmount(balance);
+                    currenciesRepository.save(curr);
+                } else if (curr.getCurrency() == Currency.BTC) {
+                    curr.setAmount(curr.getAmount().subtract(buyer.getUnits()));
+                    curr.setHold(curr.getHold().subtract(buyer.getUnits()));
+                    currenciesRepository.save(curr);
+                }
+            }
+            sellerBankAccount.setCurrencies(sellerCurrencies);
+            bankAccountRepository.save(sellerBankAccount);
+            sellerProfile.setBankAccount(sellerBankAccount);
+            userRepository.save(sellerProfile);
+            buyer.setStatus(OrderStatus.EXECUTED);
+            ordersRepository.save(buyer);
+
+            seller.setUnits(seller.getUnits().subtract(buyer.getUnits()));
+            return seller;
+        } else {
+            BigDecimal basePrice;
+            if (seller.getLimitamt().compareTo(buyer.getLimitamt()) < 0) {
+                basePrice = seller.getLimitamt();
+            } else {
+                basePrice = buyer.getLimitamt();
+            }
+            basePrice = basePrice.multiply(seller.getUnits());
+            User buyerProfile = userService.findById(buyer.getUser());
+            User sellerProfile = userService.findById(seller.getUser());
+            BankAccount buyerBankAccount = buyerProfile.getBankAccount();
+            BankAccount sellerBankAccount = sellerProfile.getBankAccount();
+            Set<Currencies> buyerCurrencies = buyerBankAccount.getCurrencies();
+            for (Currencies curr : buyerCurrencies) {
+                if (curr.getCurrency() == buyer.getCurrency()) {
+                    BigDecimal balance = curr.getAmount().subtract(basePrice);
+                    curr.setAmount(balance);
+                    curr.setHold(curr.getHold().subtract(basePrice));
+                    currenciesRepository.save(curr);
+                } else if (curr.getCurrency() == Currency.BTC) {
+                    curr.setAmount(curr.getAmount().add(seller.getUnits()));
+                    currenciesRepository.save(curr);
+                }
+            }
+            buyerBankAccount.setCurrencies(buyerCurrencies);
+            bankAccountRepository.save(buyerBankAccount);
+            buyerProfile.setBankAccount(buyerBankAccount);
+            userRepository.save(buyerProfile);
+
+            Set<Currencies> sellerCurrencies = sellerBankAccount.getCurrencies();
+            for (Currencies curr : sellerCurrencies) {
+                if (curr.getCurrency() == buyer.getCurrency()) {
+                    // here you'll have to take percentage from seller
+                    BigDecimal balance = curr.getAmount().add(basePrice);
+                    curr.setAmount(balance);
+                    currenciesRepository.save(curr);
+                } else if (curr.getCurrency() == Currency.BTC) {
+                    curr.setAmount(curr.getAmount().subtract(seller.getUnits()));
+                    curr.setHold(curr.getHold().subtract(seller.getUnits()));
+                    currenciesRepository.save(curr);
+                }
+            }
+            sellerBankAccount.setCurrencies(sellerCurrencies);
+            bankAccountRepository.save(sellerBankAccount);
+            sellerProfile.setBankAccount(sellerBankAccount);
+            userRepository.save(sellerProfile);
+            seller.setStatus(OrderStatus.EXECUTED);
+            ordersRepository.save(seller);
+            buyer.setStatus(OrderStatus.EXECUTED);
+            ordersRepository.save(buyer);
+
+            return null;
+        }
+    }
+
+    public void trasactLimit(List<Orders> bOrders, List<Orders> sOrders, Currency currency)
+            throws UserNotFoundException {
+
+        Collections.sort(bOrders, (a, b) -> a.getLimitamt().compareTo(b.getLimitamt()));
+        System.out.print("sorted buy order - > " + bOrders.toString());
+        Collections.sort(sOrders, (a, b) -> a.getLimitamt().compareTo(b.getLimitamt()));
+        System.out.print("sorted sell order - > " + sOrders.toString());
+        while (true) {
+            if (bOrders.isEmpty() && sOrders.isEmpty()) {
+                break;
+            }
+            Orders orderRemainder = transfer(bOrders.remove(0), sOrders.remove(0));
+            if (orderRemainder == null) {
+                continue;
+            } else {
+                if (orderRemainder.getType() == OrderType.BUY) {
+                    bOrders.add(0, orderRemainder);
+                } else {
+                    sOrders.add(0, orderRemainder);
+                }
+            }
+        }
+        // List<Integer> bOrderIdSorted = new ArrayList<>();
+    }
 
     public void transact(List<Orders> bOrders, List<Orders> sOrders, Currency currency) throws UserNotFoundException {
         BigDecimal btcRate = CurrencyUnitValues.getUnitValue(currency, new BigDecimal(1));
@@ -209,7 +393,7 @@ public class OrderService implements IOrderService {
         // executableOrders.addAll(borders);
         // executableOrders.addAll(sorders);
 
-        execBuy(order.getCurrency(), executableOrders);
+        execBuy(order.getCurrency(), executableOrders, OrderVariant.LIMIT);
 
     }
 
@@ -217,10 +401,11 @@ public class OrderService implements IOrderService {
         List<Orders> executableOrders = ordersRepository
                 .findByStatusAndCurrencyOrderByCreatedDateAsc(OrderStatus.PENDING, currency);
 
-        execBuy(currency, executableOrders);
+        execBuy(currency, executableOrders, OrderVariant.MARKET);
     }
 
-    public void execBuy(Currency currency, List<Orders> executableOrders) throws UserNotFoundException {
+    public void execBuy(Currency currency, List<Orders> executableOrders, OrderVariant variant)
+            throws UserNotFoundException {
         System.out.println("int the thread\nexecutable orders: " + executableOrders.toString());
         LinkedHashMap<Integer, BigDecimal> buyOrdersCumulative = new LinkedHashMap<Integer, BigDecimal>();
         LinkedHashMap<Integer, BigDecimal> sellOrdersCumulative = new LinkedHashMap<Integer, BigDecimal>();
@@ -241,7 +426,17 @@ public class OrderService implements IOrderService {
                         System.out.println("let check this");
                         break;
                     } else if (currentSellOrder.getValue().compareTo(buyRunningTotal) == 0) {
-                        transact(buyOrders, sellOrders.subList(0, currentSellOrder.getKey() + 1), currency);
+                        switch (variant) {
+                            case MARKET:
+                                transact(buyOrders, sellOrders.subList(0, currentSellOrder.getKey() + 1), currency);
+                                break;
+                            case LIMIT:
+                                // transact(buyOrders, sellOrders.subList(0, currentSellOrder.getKey() + 1),
+                                // currency);
+                                trasactLimit(buyOrders, sellOrders.subList(0, currentSellOrder.getKey() + 1), currency);
+                                break;
+                        }
+
                         return;
                     }
                 }
@@ -254,7 +449,16 @@ public class OrderService implements IOrderService {
                         System.out.println("let check this");
                         break;
                     } else if (currentBuyOrder.getValue().compareTo(sellRunningTotal) == 0) {
-                        transact(buyOrders.subList(0, currentBuyOrder.getKey() + 1), sellOrders, currency);
+                        switch (variant) {
+                            case MARKET:
+                                transact(buyOrders.subList(0, currentBuyOrder.getKey() + 1), sellOrders, currency);
+                                break;
+                            case LIMIT:
+                                // transact(buyOrders.subList(0, currentBuyOrder.getKey() + 1), sellOrders,
+                                // currency);
+                                trasactLimit(buyOrders.subList(0, currentBuyOrder.getKey() + 1), sellOrders, currency);
+                                break;
+                        }
                         return;
                     }
                 }
