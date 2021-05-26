@@ -91,7 +91,7 @@ public class OrderController {
             @RequestBody OrdersBuilder ordersBuilder)
             throws InsufficientFundsException, UserNotFoundException, BankAccountNotFoundException {
 
-        User user = userService.initiateSellOrder(userId, ordersBuilder.units);
+        User user = userService.initiateSellOrder(userId, ordersBuilder);
         ordersBuilder.setType(OrderType.SELL);
         ordersBuilder.setStatus(OrderStatus.PENDING);
         Date now = new Date();

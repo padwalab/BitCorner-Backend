@@ -163,13 +163,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User initiateSellOrder(Long userId, BigDecimal units)
+    public User initiateSellOrder(Long userId, OrdersBuilder ordersBuilder)
             throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist"));
         if (user.getBankAccount() == null) {
             throw new BankAccountNotFoundException("User does not have a bank account");
         }
+        BigDecimal units = ordersBuilder.getUnits();
         for (Currencies currencies : user.getBankAccount().getCurrencies()) {
             if (currencies.getCurrency() == Currency.BTC) {
                 if (units.compareTo(currencies.getAmount().subtract(currencies.getHold())) > 0) {

@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/btc")
 public class BitcoinController {
-    private BigDecimal i = new BigDecimal(1);
+    // private BigDecimal i = new BigDecimal(1);
 
     @GetMapping("/{currency}")
     public BigDecimal BTCRate(@PathVariable(value = "currency") Currency currency) {
-        this.i = this.i.add(new BigDecimal((int) ((Math.random() * (10 - -10)) + -10)));
-        return CurrencyUnitValues.getUnitValue(currency, new BigDecimal(1)).add(i);
+        // this.i = this.i.add(new BigDecimal((int) ((Math.random() * (10 - -10)) +
+        // -10)));
+        return CurrencyUnitValues.getUnitValue(currency, new BigDecimal(1));
     }
 
     @GetMapping("/{currency}/{units}")

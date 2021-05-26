@@ -84,6 +84,23 @@ public class OrderService implements IOrderService {
             } else {
                 basePrice = buyer.getLimitamt();
             }
+            // set the LTP of BTC here!!
+            switch (buyer.getCurrency()) {
+                case USD:
+                    System.out.println("Setting the usd rate: " + basePrice.toString());
+                    CurrencyUnitValues.setUsdRate(basePrice);
+                    break;
+                case GBP:
+                    CurrencyUnitValues.setGbpRate(basePrice);
+                    break;
+                case EUR:
+                    CurrencyUnitValues.setEurRate(basePrice);
+                    break;
+                case INR:
+                    CurrencyUnitValues.setInrRate(basePrice);
+                    break;
+            }
+
             basePrice = basePrice.multiply(seller.getUnits());
             User buyerProfile = userService.findById(buyer.getUser());
             User sellerProfile = userService.findById(seller.getUser());
@@ -136,6 +153,21 @@ public class OrderService implements IOrderService {
             } else {
                 basePrice = buyer.getLimitamt();
             }
+            switch (buyer.getCurrency()) {
+                case USD:
+                    System.out.println("Setting the usd rate: " + basePrice.toString());
+                    CurrencyUnitValues.setUsdRate(basePrice);
+                    break;
+                case GBP:
+                    CurrencyUnitValues.setGbpRate(basePrice);
+                    break;
+                case EUR:
+                    CurrencyUnitValues.setEurRate(basePrice);
+                    break;
+                case INR:
+                    CurrencyUnitValues.setInrRate(basePrice);
+                    break;
+            }
             basePrice = basePrice.multiply(buyer.getUnits());
             User buyerProfile = userService.findById(buyer.getUser());
             User sellerProfile = userService.findById(seller.getUser());
@@ -186,6 +218,21 @@ public class OrderService implements IOrderService {
                 basePrice = seller.getLimitamt();
             } else {
                 basePrice = buyer.getLimitamt();
+            }
+            switch (buyer.getCurrency()) {
+                case USD:
+                    System.out.println("Setting the usd rate: " + basePrice.toString());
+                    CurrencyUnitValues.setUsdRate(basePrice);
+                    break;
+                case GBP:
+                    CurrencyUnitValues.setGbpRate(basePrice);
+                    break;
+                case EUR:
+                    CurrencyUnitValues.setEurRate(basePrice);
+                    break;
+                case INR:
+                    CurrencyUnitValues.setInrRate(basePrice);
+                    break;
             }
             basePrice = basePrice.multiply(seller.getUnits());
             User buyerProfile = userService.findById(buyer.getUser());
@@ -422,6 +469,7 @@ public class OrderService implements IOrderService {
                 buyRunningTotal = buyRunningTotal.add(order.getUnits());
                 buyOrdersCumulative.put(i++, buyRunningTotal);
                 for (Map.Entry<Integer, BigDecimal> currentSellOrder : sellOrdersCumulative.entrySet()) {
+                    System.out.println("Buy running total: " + buyRunningTotal.toString());
                     if (currentSellOrder.getValue().compareTo(buyRunningTotal) > 0) {
                         System.out.println("let check this");
                         break;
@@ -445,6 +493,7 @@ public class OrderService implements IOrderService {
                 sellRunningTotal = sellRunningTotal.add(order.getUnits());
                 sellOrdersCumulative.put(j++, sellRunningTotal);
                 for (Map.Entry<Integer, BigDecimal> currentBuyOrder : buyOrdersCumulative.entrySet()) {
+                    System.out.println("Sell running total: " + sellRunningTotal.toString());
                     if (currentBuyOrder.getValue().compareTo(sellRunningTotal) > 0) {
                         System.out.println("let check this");
                         break;

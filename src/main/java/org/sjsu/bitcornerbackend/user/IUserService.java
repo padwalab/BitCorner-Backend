@@ -36,7 +36,7 @@ public interface IUserService {
         User initiateOrder(Long userId, OrdersBuilder ordersBuilder)
                         throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException;
 
-        User initiateSellOrder(Long userId, BigDecimal units)
+        User initiateSellOrder(Long userId, OrdersBuilder ordersBuilder)
                         throws UserNotFoundException, BankAccountNotFoundException, InsufficientFundsException;
 
         Boolean checkNickname(String nickname) throws DuplicateNicknameException;

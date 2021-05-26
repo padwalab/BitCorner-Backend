@@ -3,10 +3,12 @@ package org.sjsu.bitcornerbackend.bills;
 import java.util.List;
 
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
+import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.billExceptions.InvalidBillDetails;
 import org.sjsu.bitcornerbackend.exceptions.billExceptions.SamePayerSenderException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.user.User;
+import org.sjsu.bitcornerbackend.util.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,12 +48,12 @@ public class BillController {
         return ResponseEntity.ok().body(billService.createBill(billBuilder));
     }
 
-    // @PostMapping("/pay")
-    // public ResponseEntity<Bill> pay(@PathVariable(name = "id") Long billId)
-    // throws InvalidBillDetails, UserNotFoundException,
-    // BankAccountNotFoundException, SamePayerSenderException {
-    // return ResponseEntity.ok().body(billService.payBill(billId));
-    // }
+    @PostMapping("/pay/{id}/{currency}")
+    public ResponseEntity<Bill> pay(@PathVariable(name = "id") Long billId,
+            @PathVariable(name = "currency") Currency currency) throws InvalidBillDetails, UserNotFoundException,
+            BankAccountNotFoundException, SamePayerSenderException, InsufficientFundsException {
+        return ResponseEntity.ok().body(billService.payBill(billId, currency));
+    }
 
     @PutMapping("/cancel/{id}")
     public ResponseEntity<Bill> cancel(@PathVariable(name = "id") Long billId) throws InvalidBillDetails {
