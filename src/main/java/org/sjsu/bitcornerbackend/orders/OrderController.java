@@ -3,6 +3,8 @@ package org.sjsu.bitcornerbackend.orders;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
@@ -43,9 +45,16 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.findByStatus(status));
     }
 
-    @GetMapping("/all/{id}")
-    public ResponseEntity<List<Orders>> getAllOrders(@PathVariable(value = "id") Long userId) {
-        return ResponseEntity.ok().body(orderService.all());
+    @GetMapping("/all/buy/{id}")
+    public ResponseEntity<List<Orders>> getBuyAllOrders(@PathVariable(value = "id") Long userId)
+            throws UserNotFoundException {
+        return ResponseEntity.ok().body(orderService.allBuys(userId));
+    }
+
+    @GetMapping("/all/sell/{id}")
+    public ResponseEntity<List<Orders>> getSellAllOrders(@PathVariable(value = "id") Long userId)
+            throws UserNotFoundException {
+        return ResponseEntity.ok().body(orderService.allSells(userId));
     }
 
     @GetMapping("/bids/open")

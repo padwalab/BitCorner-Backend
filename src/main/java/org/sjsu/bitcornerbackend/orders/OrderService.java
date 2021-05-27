@@ -60,9 +60,9 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Set<Orders> all(Long id) throws UserNotFoundException {
-        User user = userService.findById(id);
-        Set<Orders> userOrders = user.getBankAccount().getOrders();
+    public List<Orders> allBuys(Long id) throws UserNotFoundException {
+        // User user = userService.findById(id);
+        List<Orders> userOrders = ordersRepository.findByUserAndTypeOrderByCreatedDateDesc(id, OrderType.BUY);
         return userOrders;
     }
 
@@ -527,6 +527,19 @@ public class OrderService implements IOrderService {
         List<Orders> Orders = ordersRepository.findByTypeAndStatusAndCurrencyOrderByLimitamtDescCreatedDateAsc(type,
                 OrderStatus.PENDING, currency);
         return Orders;
+    }
+
+    @Override
+    public Set<Orders> all(Long id) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Orders> allSells(Long id) throws UserNotFoundException {
+        // TODO Auto-generated method stub
+        List<Orders> userOrders = ordersRepository.findByUserAndTypeOrderByCreatedDateDesc(id, OrderType.SELL);
+        return userOrders;
     }
 
 }

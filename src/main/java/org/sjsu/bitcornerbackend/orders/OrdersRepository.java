@@ -13,26 +13,29 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
-    List<Orders> findByStatus(OrderStatus status);
+        List<Orders> findByStatus(OrderStatus status);
 
-    List<Orders> findByStatusAndTypeAndUserNotOrderByCreatedDateAsc(OrderStatus status, OrderType type, Long userId);
+        List<Orders> findByStatusAndTypeAndUserNotOrderByCreatedDateAsc(OrderStatus status, OrderType type,
+                        Long userId);
 
-    List<Orders> findByStatusAndTypeOrderByCreatedDateAsc(OrderStatus status, OrderType type);
+        List<Orders> findByStatusAndTypeOrderByCreatedDateAsc(OrderStatus status, OrderType type);
 
-    List<Orders> findByVariantAndTypeAndLimitamtGreaterThanEqual(OrderVariant variant, OrderType type,
-            BigDecimal limitamt);
+        List<Orders> findByVariantAndTypeAndLimitamtGreaterThanEqual(OrderVariant variant, OrderType type,
+                        BigDecimal limitamt);
 
-    List<Orders> findByVariantAndTypeAndLimitamtLessThanEqual(OrderVariant variant, OrderType type,
-            BigDecimal limitamt);
+        List<Orders> findByVariantAndTypeAndLimitamtLessThanEqual(OrderVariant variant, OrderType type,
+                        BigDecimal limitamt);
 
-    List<Orders> findByStatusOrderByCreatedDateAsc(OrderStatus status);
+        List<Orders> findByStatusOrderByCreatedDateAsc(OrderStatus status);
 
-    List<Orders> findByStatusAndCurrencyOrderByCreatedDateAsc(OrderStatus status, Currency currency);
+        List<Orders> findByStatusAndCurrencyOrderByCreatedDateAsc(OrderStatus status, Currency currency);
 
-    List<Orders> findByTypeAndStatusAndCurrencyOrderByLimitamtDescCreatedDateAsc(OrderType type, OrderStatus status,
-            Currency currency);
+        List<Orders> findByTypeAndStatusAndCurrencyOrderByLimitamtDescCreatedDateAsc(OrderType type, OrderStatus status,
+                        Currency currency);
 
-    List<Orders> findByTypeAndStatusAndCurrencyOrderByLimitamtAscCreatedDateAsc(OrderType type, OrderStatus status,
-            Currency currency);
+        List<Orders> findByTypeAndStatusAndCurrencyOrderByLimitamtAscCreatedDateAsc(OrderType type, OrderStatus status,
+                        Currency currency);
+
+        List<Orders> findByUserAndTypeOrderByCreatedDateDesc(Long user, OrderType type);
 
 }

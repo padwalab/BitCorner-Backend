@@ -21,4 +21,8 @@ public interface IOrderService {
 
     Orders createOrder(OrdersBuilder ordersBuilder);
 
+    List<Orders> allBuys(Long id) throws UserNotFoundException;
+
+    List<Orders> allSells(Long id) throws UserNotFoundException;
+
 }
