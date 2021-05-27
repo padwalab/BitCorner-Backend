@@ -100,6 +100,8 @@ public class BillService implements IBillService {
                         currenciesRepository.save(currencies2);
                         currenciesRepository.save(payerCurrencies);
                         bill.setStatus(BillStatus.PAID);
+                        billRepository.save(bill);
+                        return bill;
                     }
                 }
             }
@@ -130,6 +132,8 @@ public class BillService implements IBillService {
                         currenciesRepository.save(currencies2);
                         currenciesRepository.save(payerCurrencies);
                         bill.setStatus(BillStatus.PAID);
+                        bill = billRepository.save(bill);
+                        return bill;
                     }
                 }
             }
@@ -178,6 +182,8 @@ public class BillService implements IBillService {
                         currenciesRepository.save(currencies2);
                         currenciesRepository.save(payerCurrencies);
                         bill.setStatus(BillStatus.PAID);
+                        bill = billRepository.save(bill);
+                        return bill;
                     }
                 }
             }
@@ -195,15 +201,15 @@ public class BillService implements IBillService {
 
         if (currency == bill.getCurrency()) {
             bill = paySameCurrency(payer, sender, bill, currency);
-            billRepository.save(bill);
+            // billRepository.save(bill);
             return bill;
         } else if (currency == Currency.BTC) {
             bill = payUsingBTC(payer, sender, bill, currency);
-            billRepository.save(bill);
+            // billRepository.save(bill);
             return bill;
         } else if (currency != bill.getCurrency()) {
             bill = payDiffCurrency(payer, sender, bill, currency);
-            billRepository.save(bill);
+            // billRepository.save(bill);
             return bill;
         }
 
