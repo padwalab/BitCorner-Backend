@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
+import org.sjsu.bitcornerbackend.util.Currency;
 import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.sjsu.bitcornerbackend.util.OrderType;
 
@@ -15,6 +16,8 @@ public interface IOrderService {
     List<Orders> findByStatus(OrderStatus status);
 
     List<Orders> findByStatus(OrderStatus status, OrderType type);
+
+    List<Orders> findByStatus(OrderType type, Currency currency);
 
     Orders createOrder(OrdersBuilder ordersBuilder);
 

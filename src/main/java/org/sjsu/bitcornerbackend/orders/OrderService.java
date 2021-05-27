@@ -521,4 +521,12 @@ public class OrderService implements IOrderService {
         List<Orders> bidOrders = ordersRepository.findByStatusAndTypeOrderByCreatedDateAsc(status, type);
         return bidOrders;
     }
+
+    @Override
+    public List<Orders> findByStatus(OrderType type, Currency currency) {
+        List<Orders> Orders = ordersRepository.findByTypeAndStatusAndCurrencyOrderByLimitamtDescCreatedDateAsc(type,
+                OrderStatus.PENDING, currency);
+        return Orders;
+    }
+
 }

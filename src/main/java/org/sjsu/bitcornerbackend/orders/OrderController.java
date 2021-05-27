@@ -9,6 +9,7 @@ import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException
 
 import org.sjsu.bitcornerbackend.user.User;
 import org.sjsu.bitcornerbackend.user.UserService;
+import org.sjsu.bitcornerbackend.util.Currency;
 import org.sjsu.bitcornerbackend.util.OrderStatus;
 import org.sjsu.bitcornerbackend.util.OrderType;
 import org.sjsu.bitcornerbackend.util.OrderVariant;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -47,13 +49,13 @@ public class OrderController {
     }
 
     @GetMapping("/bids/open")
-    public ResponseEntity<List<Orders>> getOpenBids() {
-        return ResponseEntity.ok().body(orderService.findByStatus(OrderStatus.PENDING, OrderType.BUY));
+    public ResponseEntity<List<Orders>> getOpenBids(@RequestParam(name = "currency") Currency currency) {
+        return ResponseEntity.ok().body(orderService.findByStatus(OrderType.BUY, currency));
     }
 
     @GetMapping("/asks/open")
-    public ResponseEntity<List<Orders>> getOpenAsks() {
-        return ResponseEntity.ok().body(orderService.findByStatus(OrderStatus.PENDING, OrderType.SELL));
+    public ResponseEntity<List<Orders>> getOpenAsks(@RequestParam(name = "currency") Currency currency) {
+        return ResponseEntity.ok().body(orderService.findByStatus(OrderType.SELL, currency));
     }
 
     @PostMapping("/buy/{id}")
