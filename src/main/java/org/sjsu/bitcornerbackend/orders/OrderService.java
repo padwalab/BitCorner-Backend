@@ -15,6 +15,7 @@ import org.sjsu.bitcornerbackend.bankAccount.BankAccount;
 import org.sjsu.bitcornerbackend.bankAccount.BankAccountRepository;
 import org.sjsu.bitcornerbackend.currencies.Currencies;
 import org.sjsu.bitcornerbackend.currencies.CurrenciesRepository;
+import org.sjsu.bitcornerbackend.exceptions.orderExceptions.OrderDoesNotExist;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 import org.sjsu.bitcornerbackend.user.User;
 import org.sjsu.bitcornerbackend.user.UserRepository;
@@ -540,6 +541,12 @@ public class OrderService implements IOrderService {
         // TODO Auto-generated method stub
         List<Orders> userOrders = ordersRepository.findByUserAndTypeOrderByCreatedDateDesc(id, OrderType.SELL);
         return userOrders;
+    }
+
+    @Override
+    public Orders findById(Long orderId) throws OrderDoesNotExist {
+        Orders order = ordersRepository.findById(orderId).orElseThrow(() -> new OrderDoesNotExist("No such Orders"));
+        return order;
     }
 
 }

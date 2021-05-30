@@ -47,6 +47,10 @@ public class OrdersBuilder {
         return user;
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
     public OrdersBuilder() {
     }
 

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.BankAccountNotFoundException;
 import org.sjsu.bitcornerbackend.exceptions.bankAccountExceptions.InsufficientFundsException;
+import org.sjsu.bitcornerbackend.exceptions.orderExceptions.OrderDoesNotExist;
 import org.sjsu.bitcornerbackend.exceptions.userExceptions.UserNotFoundException;
 
 import org.sjsu.bitcornerbackend.user.User;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +36,9 @@ public class OrderController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OrdersRepository ordersRepository;
 
     @GetMapping("/all")
     public ResponseEntity<List<Orders>> getAllOrders() {
@@ -124,5 +129,20 @@ public class OrderController {
         }
 
         return ResponseEntity.created(URI.create(String.format("/api/orders/%s", orders.getId()))).body(user);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Orders> updateOrder(@PathVariable(name = "id") Long orderId,
+            @RequestBody OrdersBuilder ordersBuilder) throws OrderDoesNotExist {
+        // incomplete
+        Orders order = orderService.findById(orderId);
+        order.setCreatedDate(new Date());
+        order.setCurrency(ordersBuilder.getCurrency());
+        order.setLimitamt(ordersBuilder.getLimitamt());
+        order.setStatus(ordersBuilder.getStatus());
+        order.setType(ordersBuilder.getType());
+        order.setUnits(ordersBuilder.getUnits());
+        order = ordersRepository.save(order);
+        return ResponseEntity.ok().body(order);
     }
 }
